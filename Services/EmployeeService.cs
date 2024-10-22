@@ -17,9 +17,27 @@ namespace hrm_web_api.Services
             this.dbContext = dbContext;
         }
 
-        public async Task<List<Employee>> GetAllEmployeesAsync()
+        public async Task<(List<Employee>, int)> GetAllEmployeesAsync(QueryParamWithNameFilter queryParams)
         {
-            return await dbContext.Employees.ToListAsync();
+            // return await dbContext.Employees.ToListAsync();
+            var query = dbContext.Employees.AsQueryable();
+
+            // Apply filtering by name if provided
+            if (!string.IsNullOrEmpty(queryParams.Name))
+            {
+                query = query.Where(d => d.Name.ToLower().Contains(queryParams.Name.ToLower()));
+            }
+
+            // Get the total count before pagination is applied
+            var totalCount = await query.CountAsync();
+
+            // Apply pagination
+            var employees = await query
+                .Skip((queryParams.Page - 1) * queryParams.PageSize)
+                .Take(queryParams.PageSize)
+                .ToListAsync();
+
+            return (employees, totalCount);
         }
 
         public async Task<Employee?> GetEmployeeByIdAsync(Guid id)

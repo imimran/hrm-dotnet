@@ -17,9 +17,25 @@ namespace hrm_web_api.Services
             this.dbContext = dbContext;
         }
 
-        public async Task<List<User>> GetAllUserAsync()
+        public async Task<(List<User>, int)> GetAllUserAsync(QueryParamWithUsernameFilter queryParams)
         {
-          return  await dbContext.Users.ToListAsync();
+            var query = dbContext.Users.AsQueryable();
+
+ // Apply filtering by name if provided
+            if (!string.IsNullOrEmpty(queryParams.Username))
+            {
+                query = query.Where(d => d.Username.ToLower().Contains(queryParams.Username.ToLower()));
+            }
+            // Get the total count before pagination is applied
+            var totalCount = await query.CountAsync();
+
+            // Apply pagination
+            var users = await query
+                .Skip((queryParams.Page - 1) * queryParams.PageSize)
+                .Take(queryParams.PageSize)
+                .ToListAsync();
+
+            return (users, totalCount);
 
         }
 

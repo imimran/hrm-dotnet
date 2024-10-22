@@ -20,50 +20,106 @@ namespace hrm_web_api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<Employee>> GetAllEmployees()
+        public async Task<ActionResult<Employee>> GetAllEmployees([FromQuery] QueryParamWithNameFilter queryParams)
         {
-            var employees = await employeeService.GetAllEmployeesAsync();
-            return Ok(employees);
+            try
+            {
+                var (employees, totalCount) = await employeeService.GetAllEmployeesAsync(queryParams);
+
+                var totalPages = (int)Math.Ceiling((double)totalCount / queryParams.PageSize);
+
+                // Return paginated response with metadata
+                return Ok(new
+                {
+                    TotalCount = totalCount,
+                    PageSize = queryParams.PageSize,
+                    CurrentPage = queryParams.Page,
+                    TotalPages = totalPages,
+                    Employees = employees
+                });
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine($"An error occurred : {ex.Message}");
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<Employee>> GetEmployee(Guid id)
         {
-            var employee = await employeeService.GetEmployeeByIdAsync(id);
-            if (employee == null)
+            try
             {
-                return NotFound();
+                var employee = await employeeService.GetEmployeeByIdAsync(id);
+                if (employee == null)
+                {
+                    return NotFound();
+                }
+                return Ok(employee);
             }
-            return Ok(employee);
+            catch (Exception ex)
+            {
+
+                Console.WriteLine($"An error occurred : {ex.Message}");
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
         public async Task<ActionResult<Employee>> AddEmployee(AddEmployeeDto addEmployeeDto)
         {
-            var employee = await employeeService.AddEmployeeAsync(addEmployeeDto);
-            return CreatedAtAction(nameof(GetEmployee), new { id = employee.Id }, employee);
+            try
+            {
+                var employee = await employeeService.AddEmployeeAsync(addEmployeeDto);
+                return CreatedAtAction(nameof(GetEmployee), new { id = employee.Id }, employee);
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine($"An error occurred : {ex.Message}");
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("{id:guid}")]
         public async Task<ActionResult> UpdateEmployee(Guid id, AddEmployeeDto addEmployeeDto)
         {
-            var employee = await employeeService.UpdateEmployeeAsync(id, addEmployeeDto);
-            if (employee == null)
+            try
             {
-                return NotFound(id);
+                var employee = await employeeService.UpdateEmployeeAsync(id, addEmployeeDto);
+                if (employee == null)
+                {
+                    return NotFound(id);
+                }
+                return Ok(employee);
             }
-            return Ok(employee);
+            catch (Exception ex)
+            {
+
+                Console.WriteLine($"An error occurred : {ex.Message}");
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{id:guid}")]
         public async Task<ActionResult> RemoveEmployee(Guid id)
         {
-            var isRemoved = await employeeService.RemoveEmployeeAsync(id);
-            if (!isRemoved)
+            try
             {
-                return NotFound(id);
+                var isRemoved = await employeeService.RemoveEmployeeAsync(id);
+                if (!isRemoved)
+                {
+                    return NotFound(id);
+                }
+                return NoContent();
             }
-            return NoContent();
+            catch (Exception ex)
+            {
+
+                Console.WriteLine($"An error occurred : {ex.Message}");
+                return BadRequest(ex.Message);
+            }
         }
     }
 

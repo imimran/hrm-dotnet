@@ -9,24 +9,24 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace hrm_web_api.Controllers
 {
+
     [ApiController]
     [Route("api/[controller]")]
-    public class UserController : ControllerBase
+    public class DepartmentController : ControllerBase
     {
-        private readonly UserService _userService;
-
-        public UserController(UserService userService)
+        private readonly DepartmentService _departmentService;
+        public DepartmentController(DepartmentService departmentService)
         {
-            _userService = userService;
-
+            _departmentService = departmentService;
         }
 
+
         [HttpGet]
-        public async Task<ActionResult<User>> GetAllUser([FromQuery] QueryParamWithUsernameFilter queryParams)
+        public async Task<ActionResult> GetDepartments([FromQuery] QueryParamWithNameFilter queryParams)
         {
             try
             {
-               var (users, totalCount) = await _userService.GetAllUserAsync(queryParams);
+                var (departments, totalCount) = await _departmentService.GetAllDepartmentAsync(queryParams);
 
                 var totalPages = (int)Math.Ceiling((double)totalCount / queryParams.PageSize);
 
@@ -37,8 +37,9 @@ namespace hrm_web_api.Controllers
                     PageSize = queryParams.PageSize,
                     CurrentPage = queryParams.Page,
                     TotalPages = totalPages,
-                    Users = users
+                    Departments = departments
                 });
+
             }
             catch (Exception ex)
             {
@@ -48,19 +49,18 @@ namespace hrm_web_api.Controllers
             }
         }
 
+
+
         [HttpGet("{id:guid}")]
-        public async Task<ActionResult<User>> GetUser(Guid id)
+        public async Task<ActionResult<Department>> GetDepartment(Guid id)
         {
             try
             {
-                var user = await _userService.GetUserAsync(id);
-                if (user == null)
-                {
-                    return NotFound();
-                }
-                return Ok(user);
+                var department = await _departmentService.GetDepartmentByIdAsync(id);
+                if (department == null) return NotFound();
+                return Ok(department);
             }
-           catch (Exception ex)
+            catch (Exception ex)
             {
 
                 Console.WriteLine($"An error occurred : {ex.Message}");
@@ -69,12 +69,12 @@ namespace hrm_web_api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<User>> AddUser(AddUserDto addUserDto)
+        public async Task<ActionResult<Department>> AddDepartment(AddDepartmentDto addDepartmentDto)
         {
             try
             {
-                var user = await _userService.AddUserAsync(addUserDto);
-                return Ok(user);
+                var department = await _departmentService.AddDepartmentAsync(addDepartmentDto);
+                return Ok(department);
             }
             catch (Exception ex)
             {
@@ -82,16 +82,18 @@ namespace hrm_web_api.Controllers
                 Console.WriteLine($"An error occurred : {ex.Message}");
                 return BadRequest(ex.Message);
             }
+
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<ActionResult> UpdateUser(Guid id, UpdateUserDto updateUserDto)
+
+        public async Task<ActionResult<Department>> UpdateDepartment(Guid id, UpdateDepartmentDto updateDepartmentDto)
         {
             try
             {
-                var user = await _userService.UpdateUserAsync(id, updateUserDto);
-                if (user == null) return NotFound();
-                return Ok(user);
+                var department = await _departmentService.UpdateDepartmentAsync(id, updateDepartmentDto);
+                if (department == null) return NotFound();
+                return Ok(department);
             }
             catch (Exception ex)
             {
@@ -102,17 +104,16 @@ namespace hrm_web_api.Controllers
         }
 
         [HttpDelete("{id:guid}")]
-        public async Task<ActionResult> RemoveUser(Guid id)
+        public async Task<ActionResult> DeleteDepartment(Guid id)
         {
-
             try
             {
-                var isUser = await _userService.RemoveUserAsync(id);
-
-                if (!isUser) return NotFound();
+                var isRemoved = await _departmentService.RemoveDepartmentAsync(id);
+                if (!isRemoved)
+                {
+                    return NotFound(id);
+                }
                 return NoContent();
-
-
             }
             catch (Exception ex)
             {
@@ -121,6 +122,5 @@ namespace hrm_web_api.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
     }
 }
