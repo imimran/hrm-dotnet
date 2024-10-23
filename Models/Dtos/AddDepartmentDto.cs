@@ -11,7 +11,6 @@ namespace hrm_web_api.Models.Dtos
         [Required]
         public required string Name { get; set; }
 
-        [Required]
         public string? Description { get; set; }
 
          public Guid? ManagerId { get; set; }

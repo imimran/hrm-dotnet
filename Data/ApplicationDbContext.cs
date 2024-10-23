@@ -17,6 +17,10 @@ namespace hrm_web_api.Data
         public DbSet<User> Users { get; set; }
 
         public DbSet<Department> Departments { get; set; }
+
+        public DbSet<Attendance> Attendances { get; set; }
+
+        public DbSet<Leave> Leaves { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Employee>()
@@ -31,6 +35,14 @@ namespace hrm_web_api.Data
                 .Property(e => e.CreatedAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+            modelBuilder.Entity<Attendance>()
+               .Property(e => e.CreatedAt)
+               .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            modelBuilder.Entity<Leave>()
+               .Property(e => e.CreatedAt)
+               .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Employee)
                 .WithMany()
@@ -41,6 +53,18 @@ namespace hrm_web_api.Data
                 .HasOne(d => d.Employee)
                 .WithMany()
                 .HasForeignKey(d => d.ManagerId);
+
+
+            modelBuilder.Entity<Attendance>()
+                .HasOne(a => a.Employee)
+                .WithMany()
+                .HasForeignKey(a => a.EmployeeId);
+
+            modelBuilder.Entity<Leave>()
+                .HasOne(a => a.Employee)
+                .WithMany()
+                .HasForeignKey(a => a.EmployeeId);
+
         }
 
     }
