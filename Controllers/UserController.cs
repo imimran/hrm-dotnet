@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using hrm_web_api.Models.Dtos;
 using hrm_web_api.Models.Entities;
 using hrm_web_api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace hrm_web_api.Controllers
@@ -14,19 +15,44 @@ namespace hrm_web_api.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserService _userService;
+        private readonly AuthService _authService;
 
-        public UserController(UserService userService)
+        public UserController(UserService userService, AuthService authService)
         {
             _userService = userService;
+            _authService = authService;
 
         }
 
+        [HttpPost("login")]
+        [AllowAnonymous]
+        public async Task<ActionResult<AuthResponseDto>> Login(LoginDto loginDto)
+        {
+            try
+            {
+                var result = await _authService.LoginAsync(loginDto);
+                if (result == null)
+                {
+                    return Unauthorized("Invalid username or password.");
+                }
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine($"An error occurred : {ex.Message}");
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet]
+        // [Authorize(Roles = "Admin")]
         public async Task<ActionResult<User>> GetAllUser([FromQuery] QueryParamWithUsernameFilter queryParams)
         {
             try
             {
-               var (users, totalCount) = await _userService.GetAllUserAsync(queryParams);
+                var (users, totalCount) = await _userService.GetAllUserAsync(queryParams);
 
                 var totalPages = (int)Math.Ceiling((double)totalCount / queryParams.PageSize);
 
@@ -60,7 +86,7 @@ namespace hrm_web_api.Controllers
                 }
                 return Ok(user);
             }
-           catch (Exception ex)
+            catch (Exception ex)
             {
 
                 Console.WriteLine($"An error occurred : {ex.Message}");

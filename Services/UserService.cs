@@ -21,7 +21,7 @@ namespace hrm_web_api.Services
         {
             var query = dbContext.Users.AsQueryable();
 
- // Apply filtering by name if provided
+            // Apply filtering by name if provided
             if (!string.IsNullOrEmpty(queryParams.Username))
             {
                 query = query.Where(d => d.Username.ToLower().Contains(queryParams.Username.ToLower()));
@@ -42,7 +42,7 @@ namespace hrm_web_api.Services
         public async Task<User?> GetUserAsync(Guid id)
         {
             return await dbContext.Users.FindAsync(id);
-           
+
 
         }
 
