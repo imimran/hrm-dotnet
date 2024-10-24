@@ -29,6 +29,9 @@ namespace hrm_web_api.Models.Entities
         public virtual Employee? Manager { get; set; } // Navigation property to refer to the manager
         public virtual ICollection<Employee> Subordinates { get; set; } = new List<Employee>(); // Collection of subordinates
 
+         // New Payroll navigation property for one-to-many relationship
+        public virtual ICollection<Payroll> Payrolls { get; set; } = new List<Payroll>();
+
 
         public Employee()
         {
