@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using hrm_web_api.Models.Dtos;
 using hrm_web_api.Models.Entities;
@@ -11,23 +12,23 @@ namespace hrm_web_api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EmployeesController : ControllerBase
+    public class PayrollController : ControllerBase
     {
-        private readonly EmployeeService employeeService;
-
-        public EmployeesController(EmployeeService employeeService)
+        private readonly PayrollService _payrollService;
+        public PayrollController(PayrollService payrollService)
         {
-            this.employeeService = employeeService;
+            _payrollService = payrollService;
         }
+
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
 
-        public async Task<ActionResult<Employee>> GetAllEmployees([FromQuery] QueryParamWithNameFilter queryParams)
+        public async Task<ActionResult> GetPayrolls([FromQuery] QueryParamDto queryParams)
         {
             try
             {
-                var (employees, totalCount) = await employeeService.GetAllEmployeesAsync(queryParams);
+                var (payrolls, totalCount) = await _payrollService.GetAllPayrollsAsync(queryParams);
 
                 var totalPages = (int)Math.Ceiling((double)totalCount / queryParams.PageSize);
 
@@ -38,8 +39,9 @@ namespace hrm_web_api.Controllers
                     PageSize = queryParams.PageSize,
                     CurrentPage = queryParams.Page,
                     TotalPages = totalPages,
-                    Employees = employees
+                    Payrolls = payrolls
                 });
+
             }
             catch (Exception ex)
             {
@@ -49,19 +51,16 @@ namespace hrm_web_api.Controllers
             }
         }
 
-        [HttpGet("{id:guid}")]
-        [Authorize(Roles = "Admin")]
 
-        public async Task<ActionResult<Employee>> GetEmployee(Guid id)
+        [Authorize(Roles = "Admin")]
+        [HttpGet("{id:guid}")]
+        public async Task<ActionResult<Payroll>> GetPayroll(Guid id)
         {
             try
             {
-                var employee = await employeeService.GetEmployeeByIdAsync(id);
-                if (employee == null)
-                {
-                    return NotFound();
-                }
-                return Ok(employee);
+                var payroll = await _payrollService.GetPayrollAsync(id);
+                if (payroll == null) return NotFound();
+                return Ok(payroll);
             }
             catch (Exception ex)
             {
@@ -74,12 +73,12 @@ namespace hrm_web_api.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
 
-        public async Task<ActionResult<Employee>> AddEmployee(AddEmployeeDto addEmployeeDto)
+        public async Task<ActionResult<Payroll>> AddPayroll(AddPayrollDto addPayrollDto)
         {
             try
             {
-                var employee = await employeeService.AddEmployeeAsync(addEmployeeDto);
-                return CreatedAtAction(nameof(GetEmployee), new { id = employee.Id }, employee);
+                var payroll = await _payrollService.AddPayrollAsync(addPayrollDto);
+                return Ok(payroll);
             }
             catch (Exception ex)
             {
@@ -87,21 +86,20 @@ namespace hrm_web_api.Controllers
                 Console.WriteLine($"An error occurred : {ex.Message}");
                 return BadRequest(ex.Message);
             }
+
         }
 
         [HttpPut("{id:guid}")]
         [Authorize(Roles = "Admin")]
 
-        public async Task<ActionResult> UpdateEmployee(Guid id, AddEmployeeDto addEmployeeDto)
+
+        public async Task<ActionResult<Payroll>> UpdatePayroll(Guid id, UpdatePayrollDto updatePayrollDto)
         {
             try
             {
-                var employee = await employeeService.UpdateEmployeeAsync(id, addEmployeeDto);
-                if (employee == null)
-                {
-                    return NotFound(id);
-                }
-                return Ok(employee);
+                var payroll = await _payrollService.UpdatePayrollAsync(id, updatePayrollDto);
+                if (payroll == null) return NotFound();
+                return Ok(payroll);
             }
             catch (Exception ex)
             {
@@ -114,11 +112,11 @@ namespace hrm_web_api.Controllers
         [HttpDelete("{id:guid}")]
         [Authorize(Roles = "Admin")]
 
-        public async Task<ActionResult> RemoveEmployee(Guid id)
+        public async Task<ActionResult> DeletePayroll(Guid id)
         {
             try
             {
-                var isRemoved = await employeeService.RemoveEmployeeAsync(id);
+                var isRemoved = await _payrollService.RemovePayrollAsync(id);
                 if (!isRemoved)
                 {
                     return NotFound(id);
@@ -133,5 +131,4 @@ namespace hrm_web_api.Controllers
             }
         }
     }
-
 }

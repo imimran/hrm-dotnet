@@ -71,7 +71,7 @@ namespace hrm_web_api.Controllers
         }
 
         [HttpPost]
-         [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
 
         public async Task<ActionResult<Leave>> AddLeave(AddLeaveDto addLeaveDto)
         {
@@ -90,7 +90,7 @@ namespace hrm_web_api.Controllers
         }
 
         [HttpPut("{id:guid}")]
-         [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
 
 
         public async Task<ActionResult<Leave>> UpdateLeave(Guid id, UpdateLeaveDto updateLeaveDto)
@@ -110,7 +110,7 @@ namespace hrm_web_api.Controllers
         }
 
         [HttpDelete("{id:guid}")]
-         [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
 
         public async Task<ActionResult> DeleteLeave(Guid id)
         {

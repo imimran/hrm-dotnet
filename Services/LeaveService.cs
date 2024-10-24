@@ -83,6 +83,7 @@ namespace hrm_web_api.Services
             }
 
             dbContext.Leaves.Remove(leave);
+            await dbContext.SaveChangesAsync();
             return true;
         }
 
