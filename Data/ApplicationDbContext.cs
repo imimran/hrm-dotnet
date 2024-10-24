@@ -21,6 +21,8 @@ namespace hrm_web_api.Data
         public DbSet<Attendance> Attendances { get; set; }
 
         public DbSet<Leave> Leaves { get; set; }
+
+         public DbSet<Payroll> Payrolls { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Employee>()
@@ -78,6 +80,12 @@ namespace hrm_web_api.Data
                 .HasOne(a => a.Employee)
                 .WithMany()
                 .HasForeignKey(a => a.EmployeeId);
+
+            modelBuilder.Entity<Payroll>()
+                .HasOne(p => p.Employee)
+                .WithMany(e => e.Payrolls)
+                .HasForeignKey(p => p.EmployeeId)
+                .OnDelete(DeleteBehavior.Restrict); 
 
         }
 
