@@ -21,7 +21,7 @@ namespace hrm_web_api.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+         [Authorize(Roles = "Admin")]
 
         public async Task<ActionResult<Employee>> GetAllEmployees([FromQuery] QueryParamWithNameFilter queryParams)
         {
@@ -50,7 +50,7 @@ namespace hrm_web_api.Controllers
         }
 
         [HttpGet("{id:guid}")]
-        [Authorize(Roles = "Admin")]
+         [Authorize(Roles = "Admin")]
 
         public async Task<ActionResult<Employee>> GetEmployee(Guid id)
         {
@@ -72,7 +72,7 @@ namespace hrm_web_api.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+         [Authorize(Roles = "Admin")]
 
         public async Task<ActionResult<Employee>> AddEmployee(AddEmployeeDto addEmployeeDto)
         {
@@ -90,7 +90,7 @@ namespace hrm_web_api.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        [Authorize(Roles = "Admin")]
+         [Authorize(Roles = "Admin")]
 
         public async Task<ActionResult> UpdateEmployee(Guid id, AddEmployeeDto addEmployeeDto)
         {
@@ -112,7 +112,7 @@ namespace hrm_web_api.Controllers
         }
 
         [HttpDelete("{id:guid}")]
-        [Authorize(Roles = "Admin")]
+         [Authorize(Roles = "Admin")]
 
         public async Task<ActionResult> RemoveEmployee(Guid id)
         {

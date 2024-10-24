@@ -43,6 +43,20 @@ namespace hrm_web_api.Data
                .Property(e => e.CreatedAt)
                .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+            modelBuilder.Entity<Employee>()
+                .HasOne(e => e.Manager) // Define the relationship for the Manager
+                .WithMany(e => e.Subordinates) // Each manager can have multiple subordinates
+                .HasForeignKey(e => e.ManagerId) // Specify the foreign key
+                .OnDelete(DeleteBehavior.Restrict); // Prevent cascading delete to avoid deletion of subordinates when a manager is deleted
+
+
+            // Configure Employee to Department relationship
+            modelBuilder.Entity<Employee>()
+                .HasOne(e => e.Department) // Each employee belongs to one department
+                .WithMany(d => d.Employees) // A department can have multiple employees
+                .HasForeignKey(e => e.DepartmentId) // Specify the foreign key
+                .OnDelete(DeleteBehavior.SetNull); // Set DepartmentId to null if the department is deleted
+
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Employee)
                 .WithMany()

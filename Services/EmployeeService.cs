@@ -54,6 +54,10 @@ namespace hrm_web_api.Services
                 Phone = addEmployeeDto.Phone,
                 Salary = addEmployeeDto.Salary,
                 Address = addEmployeeDto.Address,
+                BirthDate = addEmployeeDto.BirthDate,
+                JoinDate = addEmployeeDto.JoinDate,
+                ManagerId = addEmployeeDto.ManagerId,
+                DepartmentId = addEmployeeDto.DepartmentId,
             };
 
             await dbContext.Employees.AddAsync(employee);
@@ -75,6 +79,10 @@ namespace hrm_web_api.Services
             employee.Phone = addEmployeeDto.Phone;
             employee.Salary = addEmployeeDto.Salary;
             employee.Address = addEmployeeDto.Address;
+            employee.BirthDate = addEmployeeDto.BirthDate;
+            employee.JoinDate = addEmployeeDto.JoinDate;
+            employee.ManagerId = addEmployeeDto.ManagerId;
+            employee.DepartmentId = addEmployeeDto.DepartmentId;
 
             await dbContext.SaveChangesAsync();
             return employee;

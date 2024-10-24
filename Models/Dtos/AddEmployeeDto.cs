@@ -19,5 +19,11 @@ namespace hrm_web_api.Models.Dtos
 
         [Required]
         public decimal Salary { get; set; }
+
+        public DateTime? JoinDate { get; set; }
+        public DateTime? BirthDate { get; set; }
+
+        public Guid? ManagerId { get; set; }
+        public Guid? DepartmentId { get; set; }
     }
 }

@@ -22,5 +22,8 @@ namespace hrm_web_api.Models.Entities
             CreatedAt = DateTime.UtcNow;
         }
 
+         // Navigation property for employees in this department
+        public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>(); // Collection of employees in this department
+
     }
 }

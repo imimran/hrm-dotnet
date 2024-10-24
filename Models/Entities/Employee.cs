@@ -15,7 +15,20 @@ namespace hrm_web_api.Models.Entities
         public string? Address { get; set; }
 
         public decimal Salary { get; set; }
+        public DateTime? JoinDate { get; set; }
+        public DateTime? BirthDate { get; set; }
+
+        public Guid? ManagerId { get; set; }
+        public Guid? DepartmentId { get; set; }
+
         public DateTime CreatedAt { get; private set; }
+
+        public Department? Department{ get; private set; }
+
+        // Navigation properties
+        public virtual Employee? Manager { get; set; } // Navigation property to refer to the manager
+        public virtual ICollection<Employee> Subordinates { get; set; } = new List<Employee>(); // Collection of subordinates
+
 
         public Employee()
         {
