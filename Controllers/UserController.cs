@@ -17,10 +17,14 @@ namespace hrm_web_api.Controllers
         private readonly UserService _userService;
         private readonly AuthService _authService;
 
-        public UserController(UserService userService, AuthService authService)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+
+        public UserController(UserService userService, AuthService authService, IHttpContextAccessor httpContextAccessor)
         {
             _userService = userService;
             _authService = authService;
+            _httpContextAccessor = httpContextAccessor;
 
         }
 
@@ -47,7 +51,7 @@ namespace hrm_web_api.Controllers
         }
 
         [HttpGet]
-        // [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<User>> GetAllUser([FromQuery] QueryParamWithUsernameFilter queryParams)
         {
             try
@@ -74,11 +78,26 @@ namespace hrm_web_api.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<User>> GetUser(Guid id)
         {
             try
             {
+                // Get the authenticated user's ID from claims
+                var authenticatedUserId = _httpContextAccessor.HttpContext.User.FindFirst("id")?.Value;
+
+                Console.WriteLine("authenticatedUserId" + authenticatedUserId);
+                if (authenticatedUserId == null)
+                {
+                    return Unauthorized("User is not authenticated.");
+                }
+
+                // Check if the authenticated user's ID matches the requested ID
+                if (id.ToString() != authenticatedUserId)
+                {
+                    return Forbid("You are not authorized to view this user's details.");
+                }
                 var user = await _userService.GetUserAsync(id);
                 if (user == null)
                 {
