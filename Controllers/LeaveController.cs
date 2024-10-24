@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using hrm_web_api.Models.Dtos;
 using hrm_web_api.Models.Entities;
 using hrm_web_api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace hrm_web_api.Controllers
@@ -21,6 +22,8 @@ namespace hrm_web_api.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult> GetLeaves([FromQuery] QueryParamDto queryParams)
         {
             try
@@ -49,7 +52,7 @@ namespace hrm_web_api.Controllers
         }
 
 
-
+        [Authorize(Roles = "Admin")]
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<Leave>> GetLeave(Guid id)
         {
@@ -68,6 +71,8 @@ namespace hrm_web_api.Controllers
         }
 
         [HttpPost]
+         [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult<Leave>> AddLeave(AddLeaveDto addLeaveDto)
         {
             try
@@ -85,6 +90,8 @@ namespace hrm_web_api.Controllers
         }
 
         [HttpPut("{id:guid}")]
+         [Authorize(Roles = "Admin")]
+
 
         public async Task<ActionResult<Leave>> UpdateLeave(Guid id, UpdateLeaveDto updateLeaveDto)
         {
@@ -103,6 +110,8 @@ namespace hrm_web_api.Controllers
         }
 
         [HttpDelete("{id:guid}")]
+         [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult> DeleteLeave(Guid id)
         {
             try

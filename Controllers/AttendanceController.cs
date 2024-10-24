@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using hrm_web_api.Models.Dtos;
 using hrm_web_api.Models.Entities;
 using hrm_web_api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace hrm_web_api.Controllers
@@ -13,7 +14,7 @@ namespace hrm_web_api.Controllers
     [Route("api/[controller]")]
     public class AttendanceController : ControllerBase
     {
-         private readonly AttendanceService _attendanceService;
+        private readonly AttendanceService _attendanceService;
         public AttendanceController(AttendanceService attendanceService)
         {
             _attendanceService = attendanceService;
@@ -21,6 +22,8 @@ namespace hrm_web_api.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult> GetAttendances([FromQuery] QueryParamDto queryParams)
         {
             try
@@ -51,6 +54,8 @@ namespace hrm_web_api.Controllers
 
 
         [HttpGet("{id:guid}")]
+        [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult<Attendance>> GetAttendance(Guid id)
         {
             try
@@ -68,6 +73,8 @@ namespace hrm_web_api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult<Attendance>> AddAttendance(AddAttendanceDto addAttendanceDto)
         {
             try
@@ -85,6 +92,8 @@ namespace hrm_web_api.Controllers
         }
 
         [HttpPut("{id:guid}")]
+        [Authorize(Roles = "Admin")]
+
 
         public async Task<ActionResult<Attendance>> UpdateAttendance(Guid id, UpdateAttendanceDto updateAttendanceDto)
         {
@@ -103,6 +112,8 @@ namespace hrm_web_api.Controllers
         }
 
         [HttpDelete("{id:guid}")]
+        [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult> DeleteAttendance(Guid id)
         {
             try

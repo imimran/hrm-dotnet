@@ -114,6 +114,8 @@ namespace hrm_web_api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult<User>> AddUser(AddUserDto addUserDto)
         {
             try
@@ -130,6 +132,8 @@ namespace hrm_web_api.Controllers
         }
 
         [HttpPut("{id:guid}")]
+        [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult> UpdateUser(Guid id, UpdateUserDto updateUserDto)
         {
             try
@@ -147,6 +151,8 @@ namespace hrm_web_api.Controllers
         }
 
         [HttpDelete("{id:guid}")]
+        [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult> RemoveUser(Guid id)
         {
 

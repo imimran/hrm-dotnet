@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using hrm_web_api.Models.Dtos;
 using hrm_web_api.Models.Entities;
 using hrm_web_api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace hrm_web_api.Controllers
@@ -20,6 +21,8 @@ namespace hrm_web_api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult<Employee>> GetAllEmployees([FromQuery] QueryParamWithNameFilter queryParams)
         {
             try
@@ -47,6 +50,8 @@ namespace hrm_web_api.Controllers
         }
 
         [HttpGet("{id:guid}")]
+        [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult<Employee>> GetEmployee(Guid id)
         {
             try
@@ -67,6 +72,8 @@ namespace hrm_web_api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult<Employee>> AddEmployee(AddEmployeeDto addEmployeeDto)
         {
             try
@@ -83,6 +90,8 @@ namespace hrm_web_api.Controllers
         }
 
         [HttpPut("{id:guid}")]
+        [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult> UpdateEmployee(Guid id, AddEmployeeDto addEmployeeDto)
         {
             try
@@ -103,6 +112,8 @@ namespace hrm_web_api.Controllers
         }
 
         [HttpDelete("{id:guid}")]
+        [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult> RemoveEmployee(Guid id)
         {
             try
