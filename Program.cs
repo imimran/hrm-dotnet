@@ -1,6 +1,7 @@
 using System.Text;
 using hrm_web_api.Data;
 using hrm_web_api.Healpers;
+using hrm_web_api.Models.Entities;
 using hrm_web_api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -52,6 +53,7 @@ builder.Services.AddScoped<AttendanceService>();
 builder.Services.AddScoped<LeaveService>();
 builder.Services.AddScoped<DepartmentService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<PayrollService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
 builder.Services.AddEndpointsApiExplorer();
